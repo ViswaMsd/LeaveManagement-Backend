@@ -5,7 +5,9 @@ const getHistory = async (req, res) => {
   let sql = `select * from Leave_Application where s_id = ${req.Studentuser} and isdeleted = 0;`;
   try {
     let ans = await connection.query(sql);
-    res.json({ data: ans[0] });
+    const role = 'STUDENT';
+
+    res.json({ data: ans[0], role });
   } catch (err) {
     res.status(400).json({ error: err });
   }
@@ -84,7 +86,7 @@ const updateApplicationForm = async (req, res) => {
     document,
   } = req.body;
   try {
-    sql = `select * from Leave_Application where id = ?`;
+    const sql = `select * from Leave_Application where id = ?`;
     const leave_app_obj = await connection.query(sql, leave_application_id);
     const leave_obj = leave_app_obj[0][0];
     if (leave_obj.isdeleted === 1) {
