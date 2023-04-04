@@ -16,7 +16,9 @@ const getAllApplications = async (req, res) => {
   let sql = `select * from Leave_Application where f_id = ?;`;
   try {
     let ans = await connection.query(sql, req.Facultyuser);
-    res.json({ data: ans[0] });
+    const role = 'FACULTY';
+
+    res.json({ data: ans[0], role });
   } catch (err) {
     res.status(400).json({ error: err });
   }
