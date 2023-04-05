@@ -4,7 +4,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const createToken = (id) => {
-  return jwt.sign({ id: id }, process.env.SECRETFORJWT, { expiresIn: "1d" });
+  return jwt.sign({ id: id, role: "STUDENT" }, process.env.SECRETFORJWT, { expiresIn: "1d" });
 };
 
 //helping login method for user
@@ -41,9 +41,7 @@ const loginUser = async (req, res) => {
     const user = await login(email, password);
 
     const token = createToken(user);
-    const role = 'STUDENT';
-
-    res.status(200).json({ email, token, role });
+    res.status(200).json({ email, token, role: "STUDENT" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -144,9 +142,8 @@ const signupUser = async (req, res) => {
     // create token
     // console.log(user_id);
     const token = createToken(user_id);
-    const role = 'STUDENT';
 
-    res.status(200).json({ email, token, role });
+    res.status(200).json({ email, token, role: "STUDENT" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

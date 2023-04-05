@@ -4,7 +4,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 const createToken = (id) => {
-  return jwt.sign({ id: id }, process.env.SECRETFORJWT, { expiresIn: "1d" });
+  return jwt.sign({ id: id, role: "FACULTY" }, process.env.SECRETFORJWT, { expiresIn: "1d" });
 };
 
 //helping login method for user
@@ -41,22 +41,14 @@ const loginUser = async (req, res) => {
     const user = await login(email, password);
 
     const token = createToken(user);
-    const role = 'FACULTY';
-
-    res.status(200).json({ email, token, role });
+    res.status(200).json({ email, token, role: "FACULTY" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
 // helping signup method for user
-const signup = async (
-  name,
-  mobile_no,
-  email,
-  password,
-  department,
-) => {
+const signup = async (name, mobile_no, email, password, department) => {
   // validation
   if (!email) {
     throw Error("email fields must be filled");
@@ -89,9 +81,9 @@ const signup = async (
     "insert into Faculty (name,mobile_no,email_id,password,department) values (?, ?, ?, ?, ?) ;";
   let values = [name, mobile_no, email, hash, department];
 
-//   console.log(values);
+  //   console.log(values);
   const id = await connection.query(sql, values);
-//   console.log(id);
+  //   console.log(id);
   return id.insertId;
 };
 
@@ -104,9 +96,8 @@ const signupUser = async (req, res) => {
     // create token
     // console.log(user_id);
     const token = createToken(user_id);
-    const role = 'FACULTY';
 
-    res.status(200).json({ email, token, role });
+    res.status(200).json({ email, token, role: "FACULTY" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -114,5 +105,5 @@ const signupUser = async (req, res) => {
 
 module.exports = {
   loginUser,
-  signupUser,
+  signupUser,
 };
